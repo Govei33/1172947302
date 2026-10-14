@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F6F7FC">
+<title>天赋罗盘 · 50题看清你天生顺手的做事方式</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    color:#1B1F38;
+    background-color:#F6F7FC;
+    background-image:
+      radial-gradient(900px 520px at 12% -8%, #E7EBFF 0%, rgba(231,235,255,0) 62%),
+      radial-gradient(800px 520px at 104% 2%, #F3E8FF 0%, rgba(243,232,255,0) 58%),
+      radial-gradient(700px 500px at 50% 108%, #E8F7F4 0%, rgba(232,247,244,0) 60%);
+    min-height:100vh;
+    min-height:100dvh;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent;
+  }
+  button{font-family:inherit}
+
+  /* ---------- 通用 ---------- */
+  .page{display:none}
+  .page.active{display:block}
+  .wrap{width:100%;max-width:660px;margin:0 auto;padding-left:20px;padding-right:20px}
+
+  .btn{
+    font-size:16px;font-weight:600;border:none;border-radius:14px;
+    padding:14px 20px;min-height:50px;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .12s ease, box-shadow .2s ease, border-color .2s ease, color .2s ease;
+    user-select:none;
+  }
+  .btn:active{transform:scale(.975)}
+  .btn-primary{
+    background:linear-gradient(135deg,#5B6BFF 0%,#8B5CF6 100%);
+    color:#fff;
+    box-shadow:0 10px 24px -8px rgba(91,107,255,.65);
+  }
+  .btn-primary:hover{box-shadow:0 12px 28px -8px rgba(91,107,255,.8)}
+  .btn-ghost{
+    background:#fff;color:#4A5070;border:1.5px solid #E3E6F3;
+  }
+  .btn-ghost:hover{border-color:#C6CDF2;color:#2B3050}
+  .btn-ghost:disabled{opacity:.38;cursor:not-allowed;transform:none}
+  .btn-block{width:100%}
+  .btn-lg{padding:16px 24px;font-size:16.5px;border-radius:16px}
+
+  /* ---------- 首页 ---------- */
+  .home{
+    max-width:600px;margin:0 auto;text-align:center;
+    padding:calc(38px + env(safe-area-inset-top)) 22px calc(36px + env(safe-area-inset-bottom));
+  }
+  .hero-art{width:min(320px,78vw);margin:0 auto 4px}
+  .hero-art svg{width:100%;height:auto;display:block}
+  .home h1{
+    font-size:32px;font-weight:800;letter-spacing:.02em;margin:6px 0 12px;
+    background:linear-gradient(135deg,#3D47C7 0%,#8B5CF6 72%);
+    -webkit-background-clip:text;background-clip:text;
+    color:#4F46E5;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero-sub{color:#61688C;font-size:15.5px;margin:0 0 30px;line-height:1.75}
+  .feat-list{display:flex;flex-direction:column;gap:12px;margin-bottom:30px;text-align:left}
+  .feat{
+    display:flex;gap:14px;align-items:flex-start;
+    background:#fff;border-radius:16px;padding:16px;
+    box-shadow:0 6px 22px -14px rgba(70,80,160,.55);
+    border:1px solid #F0F1F8;
+  }
+  .feat-dot{width:9px;height:9px;border-radius:50%;background:var(--c);margin-top:9px;flex-shrink:0}
+  .feat b{display:block;font-size:15.5px;margin-bottom:3px;font-weight:700;color:#252A48}
+  .feat p{margin:0;font-size:13.8px;color:#6B7192;line-height:1.65}
+  .disclaimer{font-size:12.5px;color:#9098B8;line-height:1.75;margin:18px 0 0;text-align:center}
+
+  /* ---------- 答题页 ---------- */
+  #page-quiz.active{
+    display:flex;flex-direction:column;
+    height:100vh;height:100dvh;overflow:hidden;
+  }
+  .quiz-head{flex-shrink:0;padding-top:calc(18px + env(safe-area-inset-top))}
+  .quiz-meta{
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:13.5px;color:#6B7192;margin-bottom:10px;
+  }
+  .q-pos{font-weight:700;color:#3C4368}
+  .q-pos em{font-style:normal;color:#9AA0BE;font-weight:500}
+  .link-btn{
+    background:none;border:none;font-size:13.5px;color:#5B6BFF;
+    cursor:pointer;padding:6px 10px;border-radius:9px;font-weight:700;
+    margin-right:-10px;
+  }
+  .link-btn:hover{background:#EEF0FF}
+  .progress{height:7px;background:#E7E9F5;border-radius:99px;overflow:hidden}
+  .progress-bar{
+    height:100%;width:0;border-radius:99px;
+    background:linear-gradient(90deg,#5B6BFF,#8B5CF6);
+    transition:width .32s cubic-bezier(.2,.8,.2,1);
+  }
+  .quiz-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:26px 0 16px}
+  .q-num{font-size:13px;font-weight:800;color:#A9AECE;letter-spacing:.16em;margin-bottom:8px}
+  .q-text{
+    font-size:20px;line-height:1.62;font-weight:650;color:#1B1F38;
+    margin:0 0 26px;letter-spacing:.01em;
+  }
+  .options{display:flex;flex-direction:column;gap:10px}
+  .option{
+    display:flex;align-items:center;gap:12px;width:100%;
+    padding:15px 16px;border:1.5px solid #E8EAF5;border-radius:14px;
+    background:#fff;font-size:15.5px;color:#1B1F38;text-align:left;
+    cursor:pointer;transition:border-color .18s, background .18s, box-shadow .18s, transform .12s;
+  }
+  .option:active{transform:scale(.985)}
+  .option .dot{
+    width:22px;height:22px;border-radius:50%;border:1.5px solid #CFD3E8;
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    transition:border-color .18s, background .18s;
+  }
+  .option.selected{
+    border-color:#5B6BFF;background:#F6F7FF;
+    box-shadow:0 6px 18px -10px rgba(91,107,255,.85);
+  }
+  .option.selected .dot{border-color:#5B6BFF;background:#5B6BFF}
+  .option.selected .dot::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+  .option.selected .opt-label{font-weight:650;color:#2B2FA0}
+  .hint{
+    font-size:13.5px;font-weight:700;color:#F97316;
+    margin:14px 0 0;min-height:22px;line-height:1.6;
+  }
+  .quiz-foot{
+    flex-shrink:0;padding-top:10px;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top,#F6F7FC 62%,rgba(246,247,252,0));
+  }
+  .quiz-foot .wrap{display:flex;gap:12px}
+  .quiz-foot .btn-ghost{flex:0 0 100px}
+  .quiz-foot .btn-primary{flex:1}
+
+  /* ---------- 答题卡 ---------- */
+  .modal{position:fixed;inset:0;z-index:100;display:none}
+  .modal.open{display:flex;align-items:flex-end;justify-content:center}
+  .modal-backdrop{
+    position:absolute;inset:0;background:rgba(20,24,50,.42);
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+    animation:fade .2s ease;
+  }
+  .modal-panel{
+    position:relative;z-index:1;
+    width:100%;max-width:560px;background:#fff;
+    border-radius:24px 24px 0 0;
+    padding:22px 20px calc(20px + env(safe-area-inset-bottom));
+    max-height:84vh;display:flex;flex-direction:column;
+    animation:slideUp .28s cubic-bezier(.2,.8,.2,1);
+  }
+  @media (min-width:640px){
+    .modal.open{align-items:center}
+    .modal-panel{border-radius:24px;padding-bottom:22px;animation:pop .22s cubic-bezier(.2,.8,.2,1)}
+  }
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+  .modal-head h3{margin:0;font-size:17px;font-weight:750;color:#1B1F38}
+  .icon-btn{
+    background:#F3F4FB;border:none;width:32px;height:32px;border-radius:10px;
+    color:#6B7192;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  }
+  .icon-btn:hover{background:#E9EBF7;color:#2B3050}
+  .modal-sub{font-size:13px;color:#8B90AC;margin:2px 0 14px}
+  .modal-sub b{color:#5B6BFF}
+  .map-grid{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
+    overflow-y:auto;max-height:44vh;padding:4px 2px 14px;margin-bottom:12px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .map-cell{
+    aspect-ratio:1/1;border-radius:11px;border:1.5px solid #E6E8F4;background:#fff;
+    font-size:13.5px;font-weight:700;color:#9AA0BE;cursor:pointer;
+    transition:.15s;padding:0;
+  }
+  .map-cell.done{background:#EEF0FF;border-color:#D3D9FF;color:#4F5BD5}
+  .map-cell.cur{border-color:#5B6BFF;color:#5B6BFF;box-shadow:0 0 0 3px rgba(91,107,255,.16)}
+
+  /* ---------- 结果页 ---------- */
+  .result{
+    padding-top:calc(30px + env(safe-area-inset-top));
+    padding-bottom:calc(40px + env(safe-area-inset-bottom));
+  }
+  .type-card{
+    position:relative;overflow:hidden;text-align:center;
+    border-radius:24px;padding:30px 22px 24px;margin-bottom:28px;
+    background:linear-gradient(160deg,var(--c-soft,#EEF0FF) 0%,#FFFFFF 72%);
+    border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 16px 40px -22px rgba(70,80,160,.9);
+  }
+  .type-card::after{
+    content:'';position:absolute;width:190px;height:190px;border-radius:50%;
+    background:var(--c,#5B6BFF);opacity:.13;filter:blur(34px);
+    top:-70px;right:-60px;pointer-events:none;
+  }
+  .type-icon{
+    width:64px;height:64px;border-radius:20px;margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;
+    background:#fff;color:var(--c,#5B6BFF);
+    box-shadow:0 10px 22px -14px rgba(70,80,160,.9);
+    position:relative;z-index:1;
+  }
+  .type-icon svg{width:32px;height:32px}
+  .type-badge{
+    display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;
+    color:var(--c,#5B6BFF);background:#fff;padding:5px 13px;border-radius:99px;
+    margin-bottom:14px;position:relative;z-index:1;
+    box-shadow:0 4px 12px -8px rgba(70,80,160,.9);
+  }
+  .type-name{font-size:26px;font-weight:800;margin:0 0 10px;color:#1B1F38;position:relative;z-index:1;letter-spacing:.01em}
+  .type-tagline{font-size:15px;color:#5A6083;margin:0 0 16px;position:relative;z-index:1;line-height:1.75}
+  .type-combo{
+    font-size:13.5px;color:#5A6083;margin:0;position:relative;z-index:1;line-height:1.8;
+    background:rgba(255,255,255,.78);border-radius:13px;padding:13px 15px;text-align:left;
+  }
+
+  .section{margin-bottom:30px}
+  .section-title{
+    font-size:16px;font-weight:750;margin:0 0 16px;color:#252A48;
+    display:flex;align-items:center;gap:9px;
+  }
+  .section-title::before{
+    content:'';width:4px;height:16px;border-radius:2px;
+    background:linear-gradient(180deg,#5B6BFF,#8B5CF6);flex-shrink:0;
+  }
+
+  .bar-row{margin-bottom:15px}
+  .bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;font-size:14px}
+  .bar-name{font-weight:650;color:#3C4368}
+  .bar-pct{font-weight:700;color:#8B90AC;font-size:13px;font-variant-numeric:tabular-nums}
+  .bar-track{height:10px;border-radius:99px;background:#EDEFF8;overflow:hidden}
+  .bar-fill{height:100%;width:0;border-radius:99px;transition:width .85s cubic-bezier(.2,.8,.2,1)}
+
+  .analysis-card{
+    position:relative;overflow:hidden;
+    background:#fff;border-radius:20px;padding:22px 20px 20px;
+    border:1px solid #F0F1F8;
+    box-shadow:0 8px 26px -20px rgba(70,80,160,.95);
+    margin-bottom:14px;
+  }
+  .analysis-card::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c);
+  }
+  .ac-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .ac-icon{
+    width:44px;height:44px;border-radius:14px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--c-soft);color:var(--c);
+  }
+  .ac-icon svg{width:22px;height:22px}
+  .ac-head h4{margin:0;font-size:16.5px;font-weight:750;color:#1B1F38}
+  .ac-sub{margin:1px 0 0;font-size:12.5px;color:#8B90AC;font-weight:700;letter-spacing:.03em}
+  .ac-detail{margin:0 0 16px;font-size:14.5px;color:#4A5070;line-height:1.9}
+  .ac-label{font-size:12.5px;font-weight:750;color:#8B90AC;letter-spacing:.05em;display:block;margin-bottom:9px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    font-size:12.5px;color:#4A5070;background:#F4F5FC;border-radius:9px;
+    padding:6px 11px;font-weight:550;
+  }
+  .analysis-note{
+    font-size:13.5px;color:#7B81A0;line-height:1.85;margin:4px 0 0;
+    background:#F4F5FC;border-radius:14px;padding:14px 16px;
+  }
+
+  .advice-group{margin-bottom:20px}
+  .advice-group h4{
+    font-size:13.5px;font-weight:800;color:#5B6BFF;margin:0 0 11px;
+    letter-spacing:.05em;
+  }
+  .advice-group h4.g2{color:#8B5CF6}
+  .advice-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+  .advice-list li{
+    display:flex;gap:12px;background:#fff;border-radius:14px;padding:14px 16px;
+    border:1px solid #F0F1F8;
+    box-shadow:0 6px 20px -18px rgba(70,80,160,1);
+    font-size:14.2px;color:#3C4368;line-height:1.8;
+  }
+  .adv-num{
+    flex-shrink:0;width:22px;height:22px;border-radius:8px;background:#EEF0FF;color:#5B6BFF;
+    font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+    margin-top:3px;
+  }
+  .advice-list li.g2 .adv-num{background:#F5EBFF;color:#8B5CF6}
+
+  .result-actions{display:flex;flex-direction:column;gap:11px;margin-top:6px}
+  @media (min-width:560px){
+    .result-actions{flex-direction:row}
+    .result-actions .btn{flex:1}
+  }
+
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @keyframes slideUp{from{transform:translateY(26px);opacity:.5}to{transform:translateY(0);opacity:1}}
+  @keyframes pop{from{transform:scale(.94);opacity:.5}to{transform:scale(1);opacity:1}}
+
+  @media (max-width:400px){
+    .q-text{font-size:18.5px}
+    .home h1{font-size:28px}
+    .type-name{font-size:23px}
+    .map-grid{grid-template-columns:repeat(5,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= 首页 ======================= -->
+<section class="page active" id="page-home">
+  <div class="home">
+    <div class="hero-art">
+      <svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="needle" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#5B6BFF"/>
+            <stop offset="100%" stop-color="#A78BFA"/>
+          </linearGradient>
+          <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#C9CFFF" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="#C9CFFF" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="160" cy="105" r="98" fill="url(#halo)"/>
+        <circle cx="160" cy="105" r="82" stroke="#DFE3FA" stroke-width="1.5" stroke-dasharray="3 7" fill="none"/>
+        <circle cx="160" cy="105" r="60" stroke="#E8EAFA" stroke-width="1.5" fill="none"/>
+        <path d="M160 27 L234 81 L206 168 L114 168 L86 81 Z" stroke="#E4E7FA" stroke-width="1.5" fill="none"/>
+        <path d="M160 50 L170 105 L150 105 Z" fill="url(#needle)"/>
+        <path d="M160 160 L170 105 L150 105 Z" fill="#E4E7FA"/>
+        <circle cx="160" cy="105" r="6" fill="#fff" stroke="#5B6BFF" stroke-width="2"/>
+        <circle cx="160" cy="27" r="6.5" fill="#4F6BFF"/>
+        <circle cx="234" cy="81" r="6.5" fill="#F97316"/>
+        <circle cx="206" cy="168" r="6.5" fill="#A855F7"/>
+        <circle cx="114" cy="168" r="6.5" fill="#EC4899"/>
+        <circle cx="86" cy="81" r="6.5" fill="#10B981"/>
+      </svg>
+    </div>
+    <h1>天赋罗盘</h1>
+    <p class="hero-sub">50 个日常习惯，帮你看清自己天生顺手的做事方式</p>
+
+    <div class="feat-list">
+      <div class="feat">
+        <span class="feat-dot" style="--c:#4F6BFF"></span>
+        <div>
+          <b>5 个天赋维度</b>
+          <p>逻辑拆解 · 语言叙事 · 图像创造 · 人际共鸣 · 行动实操</p>
+        </div>
+      </div>
+      <div class="feat">
+        <span class="feat-dot" style="--c:#8B5CF6"></span>
+        <div>
+          <b>约 5 分钟</b>
+          <p>没有对错，凭第一反应选最接近你的那个就好</p>
+        </div>
+      </div>
+      <div class="feat">
+        <span class="feat-dot" style="--c:#F97316"></span>
+        <div>
+          <b>随时可以回头改</b>
+          <p>答题卡自由跳转，改动答案后结果会重新计算</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block btn-lg" id="btn-start">开始测评</button>
+    <p class="disclaimer">
+      本测评为原创自评工具，用于自我梳理与启发，<br>
+      不构成心理诊断或专业评估，请勿用于任何临床用途。
+    </p>
+  </div>
+</section>
+
+<!-- ======================= 答题页 ======================= -->
+<section class="page" id="page-quiz">
+  <header class="quiz-head">
+    <div class="wrap">
+      <div class="quiz-meta">
+        <span class="q-pos" id="q-index">第 1 题 <em>/ 50</em></span>
+        <button class="link-btn" id="btn-map" type="button">答题卡</button>
+      </div>
+      <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+    </div>
+  </header>
+
+  <main class="quiz-body">
+    <div class="wrap">
+      <div class="q-num" id="q-num">01</div>
+      <h2 class="q-text" id="q-text">题目加载中…</h2>
+      <div class="options" id="options"></div>
+      <p class="hint" id="q-hint"></p>
+    </div>
+  </main>
+
+  <footer class="quiz-foot">
+    <div class="wrap">
+      <button class="btn btn-ghost" id="btn-prev" type="button">上一题</button>
+      <button class="btn btn-primary" id="btn-next" type="button">下一题</button>
+    </div>
+  </footer>
+</section>
+
+<!-- ======================= 结果页 ======================= -->
+<section class="page" id="page-result">
+  <div class="wrap result">
+    <div class="type-card" id="type-card">
+      <div class="type-icon" id="type-icon"></div>
+      <div class="type-badge" id="type-rank">主天赋</div>
+      <h2 class="type-name" id="type-name">—</h2>
+      <p class="type-tagline" id="type-tagline">—</p>
+      <p class="type-combo" id="type-combo">—</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">五维天赋分布</h3>
+      <div id="bars"></div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">你的天赋解析</h3>
+      <div id="analysis"></div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">给你的行动建议</h3>
+      <div id="advice"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-primary" id="btn-retry" type="button">重新测试</button>
+      <button class="btn btn-ghost" id="btn-review" type="button">返回修改答案</button>
+    </div>
+
+    <p class="disclaimer">
+      本测评为原创自评工具，结果基于你自己的作答生成，<br>
+      不代表任何专业心理学评估结论。
+    </p>
+  </div>
+</section>
+
+<!-- ======================= 答题卡弹窗 ======================= -->
+<div class="modal" id="modal-map" role="dialog" aria-modal="true" aria-label="答题卡">
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3>答题卡</h3>
+      <button class="icon-btn" data-close="1" type="button" aria-label="关闭">✕</button>
+    </div>
+    <p class="modal-sub">已作答 <b id="map-done">0</b> / 50 题 · 点击题号可直接跳转</p>
+    <div class="map-grid" id="map-grid"></div>
+    <button class="btn btn-primary btn-block" data-close="1" type="button">继续答题</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ========================================================
+     一、天赋维度定义
+     ======================================================== */
+  var DIM_ORDER = ['L', 'V', 'I', 'P', 'A'];
+
+  var ICONS = {
+    L: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="8.5" y="14" width="7" height="7" rx="2"/><path d="M6.5 10v2.2a2 2 0 0 0 2 2h1.2"/><path d="M17.5 10v2.2a2 2 0 0 1-2 2h-1.2"/></svg>',
+    V: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v10.5H9.5L4.5 20z"/><path d="M8.5 9.5h7M8.5 12.5h4"/></svg>',
+    I: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 6.1L20.5 11.5l-6.1 2.4L12 20l-2.4-6.1L3.5 11.5l6.1-2.4z"/></svg>',
+    P: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.6-7-9.6A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 7 3.2C19 15.4 12 20 12 20z"/></svg>',
+    A: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2.5L4.5 14h6l-1 7.5L19.5 10h-6z"/></svg>'
+  };
+
+  var DIM = {
+    L: {
+      key: 'L',
+      name: '逻辑拆解力',
+      color: '#4F6BFF',
+      soft: '#EAEEFF',
+      icon: ICONS.L,
+      tagline: '你天生擅长把一团乱麻拆成清晰的步骤',
+      verb: '把复杂问题拆成可执行的步骤',
+      detail: '遇到复杂的事情，你的大脑会自动开始分类、排序、找因果。当别人还被细节淹没的时候，你已经在心里画出了一张流程图。这种能力让你在需要判断、规划、排查问题的场合特别顺手——你往往是最先把事情「想明白」的那个人。',
+      scenes: ['制定计划与排期', '排查故障与找漏洞', '分析数据与对账', '设计规则与流程'],
+      advice: [
+        '把「想清楚」变成看得见的输出：用清单、流程图、表格记录你的思考，让别人也能复用。',
+        '主动接手团队里「理不清」的那部分工作，这是你最容易出彩的位置。',
+        '小心过度分析：给每个决定设一个截止时间，到点就用当前最优解开始行动。',
+        '找一个偏行动、偏表达的搭档——你负责结构，他负责推进和传播。'
+      ]
+    },
+    V: {
+      key: 'V',
+      name: '语言叙事力',
+      color: '#F97316',
+      soft: '#FFF0E6',
+      icon: ICONS.V,
+      tagline: '你天生擅长用语言把想法和感受准确地递出去',
+      verb: '把事情讲得让人愿意听、听得懂',
+      detail: '你对词语的敏感度很高，能捕捉到别人说不清的那点微妙，也能把平淡的事讲得有画面、有温度。语言是你的杠杆——同样一件事，从你嘴里说出来，别人更容易理解，也更容易被说服。',
+      scenes: ['写文案与做内容', '讲课与培训', '谈判与说服', '整理与总结他人想法'],
+      advice: [
+        '给自己开一个稳定的输出口：每周写一段、录一段，把零散的表达慢慢积累成作品。',
+        '刻意收集「好句子」和「好比喻」，建立属于自己的语料库。',
+        '在会议或群里主动当总结者，你的复述往往比原始讨论更有价值。',
+        '警惕「说得多、做得少」：给每一次表达配上一个可执行的动作。'
+      ]
+    },
+    I: {
+      key: 'I',
+      name: '图像创造感',
+      color: '#A855F7',
+      soft: '#F5EBFF',
+      icon: ICONS.I,
+      tagline: '你天生擅长在脑子里「看见」还没发生的东西',
+      verb: '把还没成形的东西先想象出来',
+      detail: '你思考的时候常常伴随着画面——空间、颜色、形状、场景。你能在事情成形之前就想象出它该是什么样子，这让你在需要审美、创意和整体感的地方特别有优势。别人看到的是零件，你看到的是成品。',
+      scenes: ['设计与视觉表达', '空间与陈列布置', '产品与体验构思', '影像与内容创作'],
+      advice: [
+        '随身记录灵感：截图、拍照、随手画草图，别让画面只停在脑子里。',
+        '学一个能快速把想法可视化的工具（哪怕只是纸笔草图），让你的想象能被别人看到。',
+        '主动参与需要「定调子」的环节：风格、方向、氛围，这是你的主场。',
+        '给创意配一个落地流程，避免想法很多、成品很少。'
+      ]
+    },
+    P: {
+      key: 'P',
+      name: '人际共鸣力',
+      color: '#EC4899',
+      soft: '#FFEBF4',
+      icon: ICONS.P,
+      tagline: '你天生擅长接收到别人没有说出口的那部分',
+      verb: '读懂人的状态并让人愿意配合',
+      detail: '你对情绪和气场很敏感，能察觉气氛里细微的变化，也容易让别人在你面前放松下来。你像团队里的温度计和黏合剂，很多关系因为你在场而变得更顺畅。',
+      scenes: ['协调与沟通', '服务与陪伴类工作', '团队氛围维护', '理解用户与客户'],
+      advice: [
+        '把「感觉」变成「信息」：用中性的话说出你观察到的情绪，比如「我感觉大家有点赶」，你的敏感就会变成团队资源。',
+        '学会给自己设边界：共情不等于替别人承担，每天留一段完全属于自己的时间。',
+        '在需要理解人的岗位上主动发声——用户访谈、需求收集、客户沟通。',
+        '找一个偏理性、能拍板的搭档：你负责感知，他负责决策。'
+      ]
+    },
+    A: {
+      key: 'A',
+      name: '行动实操力',
+      color: '#10B981',
+      soft: '#E6F8F1',
+      icon: ICONS.A,
+      tagline: '你天生擅长把事情真正做出来，而不只是想出来',
+      verb: '把计划真正变成看得见的成品',
+      detail: '你不喜欢停在讨论阶段，更愿意先动手试一下。你的学习方式是「做中学」，你的信心来自「我做成了」。在想得多、做得少的环境里，你是最稀缺的那一种人。',
+      scenes: ['从 0 到 1 的落地', '手工与制作', '现场执行与临场应变', '快速试错与迭代'],
+      advice: [
+        '养成「最小可做版本」的习惯：任何想法在 48 小时内做出一个粗糙版本。',
+        '把做完的事记录下来，形成一份「我能做成」的证据清单。',
+        '在团队里主动认领「把它做出来」的角色，而不是停在讨论里。',
+        '补一点复盘习惯：做完之后花十分钟，写下哪些做法值得再来一次。'
+      ]
+    }
+  };
+
+  /* ========================================================
+     二、50 道题目（按维度轮流穿插，避免连续同维度）
+     ======================================================== */
+  var RAW = {
+    L: [
+      '遇到新家电或新软件，我会先自己摸索说明书和设置，而不是马上问别人。',
+      '听别人讲一段复杂的事情经过，我会下意识地理出前因后果。',
+      '我会把大目标拆成一张清单，然后一项一项打勾。',
+      '发现一件事不对劲时，我喜欢找出到底是哪个环节出了问题。',
+      '做决定前，我习惯把几个选项的条件和参数摆在一起比较。',
+      '别人讲得乱七八糟的时候，我会帮他把顺序理清楚。',
+      '我喜欢数独、推理题或需要动脑的策略类游戏。',
+      '做预算或安排行程时，我会把数字和时间算得比较细。',
+      '我常常会想「这件事背后的规律是什么」。',
+      '动手做一件事之前，我会先在脑子里过一遍流程。'
+    ],
+    V: [
+      '我喜欢把生活里的小事讲成有意思的故事。',
+      '聊天时，我常常能找到特别准确的词来形容自己的感受。',
+      '我发消息习惯把事情写清楚、写完整，怕对方看不懂。',
+      '我会留意一篇文章或一句广告里的用词好不好。',
+      '朋友遇到烦心事时，会来找我聊一聊、听我说几句。',
+      '看书或看剧时，我会记住那些打动我的句子。',
+      '我能在会议或群聊里，把大家七嘴八舌的想法总结出来。',
+      '我偶尔会写日记、写随笔，或者在社交平台上发长文。',
+      '解释一件事时，我常会打个比方，让对方更容易懂。',
+      '说话的时候，我会留意对方有没有听懂、有没有兴趣。'
+    ],
+    I: [
+      '拍照时我会特意去找角度、构图或者光线。',
+      '布置房间之前，我会在脑子里先想象家具怎么摆。',
+      '看到好看的包装或海报，我会停下来多看几眼。',
+      '我喜欢用画图、表格或示意图，帮自己理清思路。',
+      '我经常冒出一些天马行空、不太常规的点子。',
+      '在陌生的地方，我比较容易找到方向，不太容易迷路。',
+      '我会给手机桌面、房间或工位做风格上的统一搭配。',
+      '有时候我会在脑子里「播放」某个场景，像电影一样。',
+      '我喜欢动手做需要美感的东西，比如手账、剪辑、摆盘。',
+      '身边的人说过我「想象力挺丰富」。'
+    ],
+    P: [
+      '我能很快感觉到一个房间里的气氛好不好。',
+      '朋友心情不好时，我常常在他开口之前就察觉到了。',
+      '我经常在朋友之间充当调解人或者传话筒。',
+      '我会记得别人提过的小事，比如他喜欢的口味。',
+      '别人向我倾诉时，我能耐心听完，不急着给建议。',
+      '在团队里，我会留意有没有人被冷落。',
+      '我不太喜欢冲突，会主动想办法让场面缓和下来。',
+      '我大概能猜出别人为什么会有那样的反应。',
+      '别人愿意跟我讲比较私人的事情。',
+      '别人的情绪，会影响我自己的心情。'
+    ],
+    A: [
+      '想到一件事，我通常很快就会动手去做，而不是一直想。',
+      '学新东西时，我更喜欢直接上手试，而不是先看理论。',
+      '家里有东西坏了，我会先试着自己修一修。',
+      '做事的时候我身体闲不下来，喜欢边动边想。',
+      '我不太怕把东西弄脏或者弄乱，先做出来再说。',
+      '我会长期坚持一项需要身体参与的活动，比如运动、跳舞、做饭。',
+      '计划有变动时，我能很快调整状态，马上行动。',
+      '比起在纸上推演，我更喜欢在真实场景里学习。',
+      '别人说过我「手很巧」或者「很能干」。',
+      '与其讨论很久，我更愿意先做出一个小样来看看。'
+    ]
+  };
+
+  var QUESTIONS = [];
+  (function buildQuestions() {
+    for (var i = 0; i < 10; i++) {
+      for (var j = 0; j < DIM_ORDER.length; j++) {
+        var k = DIM_ORDER[j];
+        QUESTIONS.push({ dim: k, text: RAW[k][i] });
+      }
+    }
+  })();
+
+  var OPTIONS = [
+    { v: 1, label: '完全不像我' },
+    { v: 2, label: '不太像我' },
+    { v: 3, label: '一半一半' },
+    { v: 4, label: '比较像我' },
+    { v: 5, label: '非常像我' }
+  ];
+
+  /* ========================================================
+     三、状态与元素
+     ======================================================== */
+  var state = {
+    current: 0,
+    answers: new Array(QUESTIONS.length).fill(null)
+  };
+
+  var el = {
+    // 页面
+    pages: document.querySelectorAll('.page'),
+    // 答题
+    qIndex: document.getElementById('q-index'),
+    qNum: document.getElementById('q-num'),
+    qText: document.getElementById('q-text'),
+    options: document.getElementById('options'),
+    hint: document.getElementById('q-hint'),
+    progressBar: document.getElementById('progress-bar'),
+    btnPrev: document.getElementById('btn-prev'),
+    btnNext: document.getElementById('btn-next'),
+    quizBody: document.querySelector('.quiz-body'),
+    // 答题卡
+    modal: document.getElementById('modal-map'),
+    mapGrid: document.getElementById('map-grid'),
+    mapDone: document.getElementById('map-done')
+  };
+
+  /* ========================================================
+     四、页面切换
+     ======================================================== */
+  function showPage(id) {
+    for (var i = 0; i < el.pages.length; i++) {
+      el.pages[i].classList.toggle('active', el.pages[i].id === id);
+    }
+    if (id !== 'page-quiz') window.scrollTo(0, 0);
+  }
+
+  /* ========================================================
+     五、答题逻辑
+     ======================================================== */
+  function renderQuestion() {
+    var i = state.current;
+    var q = QUESTIONS[i];
+
+    el.qNum.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
+    el.qText.textContent = q.text;
+
+    el.options.innerHTML = '';
+    for (var n = 0; n < OPTIONS.length; n++) {
+      var o = OPTIONS[n];
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option' + (state.answers[i] === o.v ? ' selected' : '');
+      btn.setAttribute('data-value', o.v);
+
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      var lab = document.createElement('span');
+      lab.className = 'opt-label';
+      lab.textContent = o.label;
+
+      btn.appendChild(dot);
+      btn.appendChild(lab);
+
+      (function (value) {
+        btn.addEventListener('click', function () { selectOption(value); });
+      })(o.v);
+
+      el.options.appendChild(btn);
+    }
+
+    el.qIndex.innerHTML = '第 ' + (i + 1) + ' 题 <em>/ ' + QUESTIONS.length + '</em>';
+    el.btnPrev.disabled = (i === 0);
+    el.btnNext.textContent = (i === QUESTIONS.length - 1) ? '查看结果' : '下一题';
+    el.hint.textContent = '';
+
+    updateProgress();
+    el.quizBody.scrollTop = 0;
+  }
+
+  function selectOption(v) {
+    state.current && 0;
+    state.answers[state.current] = v;
+
+    var nodes = el.options.children;
+    for (var i = 0; i < nodes.length; i++) {
+      var match = Number(nodes[i].getAttribute('data-value')) === v;
+      nodes[i].classList.toggle('selected', match);
+    }
+    el.hint.textContent = '';
+    updateProgress();
+  }
+
+  function updateProgress() {
+    var done = 0;
+    for (var i = 0; i < state.answers.length; i++) {
+      if (state.answers[i] !== null) done++;
+    }
+    el.progressBar.style.width = (done / QUESTIONS.length * 100) + '%';
+  }
+
+  function shakeOptions() {
+    if (!el.options.animate) return;
+    el.options.animate(
+      [
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-6px)' },
+        { transform: 'translateX(6px)' },
+        { transform: 'translateX(-3px)' },
+        { transform: 'translateX(0)' }
+      ],
+      { duration: 300, easing: 'ease-in-out' }
+    );
+  }
+
+  function goNext() {
+    if (state.answers[state.current] === null) {
+      el.hint.textContent = '先选一个最接近你的答案，再继续吧';
+      shakeOptions();
+      return;
+    }
+    if (state.current === QUESTIONS.length - 1) {
+      submitAll();
+      return;
+    }
+    state.current++;
+    renderQuestion();
+  }
+
+  function goPrev() {
+    if (state.current > 0) {
+      state.current--;
+      renderQuestion();
+    }
+  }
+
+  function submitAll() {
+    var firstUnanswered = -1;
+    for (var i = 0; i < state.answers.length; i++) {
+      if (state.answers[i] === null) { firstUnanswered = i; break; }
+    }
+    if (firstUnanswered !== -1) {
+      state.current = firstUnanswered;
+      renderQuestion();
+      el.hint.textContent = '第 ' + (firstUnanswered + 1) + ' 题还没有作答';
+      shakeOptions();
+      return;
+    }
+    renderResult();
+    showPage('page-result');
+    window.scrollTo(0, 0);
+  }
+
+  /* ========================================================
+     六、计分
+     ======================================================== */
+  function computeResult() {
+    var totals = {}, counts = {};
+    for (var i = 0; i < DIM_ORDER.length; i++) {
+      totals[DIM_ORDER[i]] = 0;
+      counts[DIM_ORDER[i]] = 0;
+    }
+
+    for (var q = 0; q < QUESTIONS.length; q++) {
+      var a = state.answers[q];
+      if (a !== null) {
+        totals[QUESTIONS[q].dim] += a;
+        counts[QUESTIONS[q].dim] += 1;
+      }
+    }
+
+    var list = [];
+    for (var d = 0; d < DIM_ORDER.length; d++) {
+      var key = DIM_ORDER[d];
+      var c = counts[key] || 1;
+      var min = c * 1;
+      var max = c * 5;
+      var raw = totals[key];
+      var pct = max > min ? Math.round((raw - min) / (max - min) * 100) : 0;
+      pct = Math.max(0, Math.min(100, pct));
+
+      var item = {
+        key: key,
+        raw: raw,
+        pct: pct,
+        name: DIM[key].name,
+        color: DIM[key].color,
+        soft: DIM[key].soft,
+        icon: DIM[key].icon,
+        tagline: DIM[key].tagline,
+        verb: DIM[key].verb,
+        detail: DIM[key].detail,
+        scenes: DIM[key].scenes,
+        advice: DIM[key].advice
+      };
+      list.push(item);
+    }
+
+    list.sort(function (a, b) {
+      if (b.pct !== a.pct) return b.pct - a.pct;
+      return DIM_ORDER.indexOf(a.key) - DIM_ORDER.indexOf(b.key);
+    });
+
+    return list;
+  }
+
+  /* ========================================================
+     七、结果渲染
+     ======================================================== */
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function renderResult() {
+    var list = computeResult();
+    var main = list[0];
+    var sub = list[1];
+
+    /* --- 主卡片 --- */
+    var card = document.getElementById('type-card');
+    card.style.setProperty('--c', main.color);
+    card.style.setProperty('--c-soft', main.soft);
+
+    document.getElementById('type-icon').innerHTML = main.icon;
+    document.getElementById('type-name').textContent = main.name;
+    document.getElementById('type-tagline').textContent = main.tagline;
+    document.getElementById('type-rank').textContent = '主天赋 · ' + main.pct + '%';
+
+    var tie = (main.pct === sub.pct);
+    document.getElementById('type-combo').textContent = tie
+      ? '你的「' + main.name + '」与「' + sub.name + '」得分几乎并列。两种方式都是你的主场，可以按场合自由切换。'
+      : '你的主天赋是「' + main.name + '」，辅助天赋是「' + sub.name + '」。前者决定你最顺手的做事方式，后者是你随时可以调用的第二引擎。';
+
+    /* --- 五维分布 --- */
+    var barsHtml = '';
+    for (var i = 0; i < list.length; i++) {
+      var d = list[i];
+      barsHtml +=
+        '<div class="bar-row">' +
+          '<div class="bar-top">' +
+            '<span class="bar-name">' + esc(d.name) + '</span>' +
+            '<span class="bar-pct">' + d.pct + '%</span>' +
+          '</div>' +
+          '<div class="bar-track">' +
+            '<div class="bar-fill" data-w="' + d.pct + '" style="background:' + d.color + '"></div>' +
+          '</div>' +
+        '</div>';
+    }
+    document.getElementById('bars').innerHTML = barsHtml;
+
+    /* --- 解析 --- */
+    var analysisHtml = '';
+
+    analysisHtml +=
+      '<div class="analysis-card" style="--c:' + main.color + ';--c-soft:' + main.soft + '">' +
+        '<div class="ac-head">' +
+          '<span class="ac-icon">' + main.icon + '</span>' +
+          '<div><h4>' + esc(main.name) + '</h4>' +
+          '<p class="ac-sub">主天赋 · ' + main.pct + '%</p></div>' +
+        '</div>' +
+        '<p class="ac-detail">' + esc(main.detail) + '</p>' +
+        '<span class="ac-label">你顺手的场景</span>' +
+        '<div class="chips">' +
+          main.scenes.map(function (s) { return '<span class="chip">' + esc(s) + '</span>'; }).join('') +
+        '</div>' +
+      '</div>';
+
+    analysisHtml +=
+      '<div class="analysis-card" style="--c:' + sub.color + ';--c-soft:' + sub.soft + '">' +
+        '<div class="ac-head">' +
+          '<span class="ac-icon">' + sub.icon + '</span>' +
+          '<div><h4>' + esc(sub.name) + '</h4>' +
+          '<p class="ac-sub">辅助天赋 · ' + sub.pct + '%</p></div>' +
+        '</div>' +
+        '<p class="ac-detail">' + esc(sub.detail) + '</p>' +
+        '<span class="ac-label">可以发挥的场景</span>' +
+        '<div class="chips">' +
+          sub.scenes.map(function (s) { return '<span class="chip">' + esc(s) + '</span>'; }).join('') +
+        '</div>' +
+      '</div>';
+
+    analysisHtml +=
+      '<p class="analysis-note">其余方向得分相对靠后，这并不代表短板，只是它们通常不是你第一时间会调用的方式。遇到需要它们的场合，找人配合往往比硬补更划算。</p>';
+
+    document.getElementById('analysis').innerHTML = analysisHtml;
+
+    /* --- 行动建议 --- */
+    var adviceHtml = '';
+
+    adviceHtml += '<div class="advice-group"><h4>发挥你的主天赋</h4><ul class="advice-list">';
+    for (var m = 0; m < main.advice.length; m++) {
+      adviceHtml += '<li><span class="adv-num">' + (m + 1) + '</span><span>' + esc(main.advice[m]) + '</span></li>';
+    }
+    adviceHtml += '</ul></div>';
+
+    adviceHtml += '<div class="advice-group"><h4 class="g2">用辅助天赋加成</h4><ul class="advice-list">';
+    for (var s2 = 0; s2 < 2 && s2 < sub.advice.length; s2++) {
+      adviceHtml += '<li class="g2"><span class="adv-num">' + (s2 + 1) + '</span><span>' + esc(sub.advice[s2]) + '</span></li>';
+    }
+    adviceHtml += '</ul></div>';
+
+    document.getElementById('advice').innerHTML = adviceHtml;
+
+    /* --- 条形图动画 --- */
+    requestAnimationFrame(function () {
+      var fills = document.querySelectorAll('.bar-fill');
+      for (var f = 0; f < fills.length; f++) {
+        fills[f].style.width = fills[f].getAttribute('data-w') + '%';
+      }
+    });
+  }
+
+  /* ========================================================
+     八、答题卡
+     ======================================================== */
+  function renderMap() {
+    var html = '';
+    var done = 0;
+    for (var i = 0; i < QUESTIONS.length; i++) {
+      var isDone = state.answers[i] !== null;
+      if (isDone) done++;
+      var cls = 'map-cell' + (isDone ? ' done' : '') + (i === state.current ? ' cur' : '');
+      html += '<button type="button" class="' + cls + '" data-i="' + i + '">' + (i + 1) + '</button>';
+    }
+    el.mapGrid.innerHTML = html;
+    el.mapDone.textContent = done;
+  }
+
+  function openMap() {
+    renderMap();
+    el.modal.classList.add('open');
+  }
+
+  function closeMap() {
+    el.modal.classList.remove('open');
+  }
+
+  /* ========================================================
+     九、事件绑定
+     ======================================================== */
+  document.getElementById('btn-start').addEventListener('click', function () {
+    showPage('page-quiz');
+    renderQuestion();
+  });
+
+  el.btnNext.addEventListener('click', goNext);
+  el.btnPrev.addEventListener('click', goPrev);
+  document.getElementById('btn-map').addEventListener('click', openMap);
+
+  el.mapGrid.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.map-cell') : null;
+    if (!btn) return;
+    state.current = Number(btn.getAttribute('data-i'));
+    closeMap();
+    renderQuestion();
+  });
+
+  el.modal.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute('data-close')) {
+      closeMap();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (el.modal.classList.contains('open') && e.key === 'Escape') {
+      closeMap();
+      return;
+    }
+    if (!document.getElementById('page-quiz').classList.contains('active')) return;
+    if (el.modal.classList.contains('open')) return;
+
+    if (e.key === 'ArrowLeft') goPrev();
+    if (e.key === 'ArrowRight' || e.key === 'Enter') goNext();
+    if (e.key >= '1' && e.key <= '5') {
+      selectOption(Number(e.key));
+    }
+  });
+
+  document.getElementById('btn-retry').addEventListener('click', function () {
+    state.answers = new Array(QUESTIONS.length).fill(null);
+    state.current = 0;
+    showPage('page-quiz');
+    renderQuestion();
+  });
+
+  document.getElementById('btn-review').addEventListener('click', function () {
+    showPage('page-quiz');
+    renderQuestion();
+  });
+
+  /* 初始化 */
+  renderQuestion();
+
+})();
+</script>
+</body>
+</html>
